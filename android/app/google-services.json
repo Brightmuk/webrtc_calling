@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_number": "285473983255",
+    "project_id": "webrtc-27c8a",
+    "storage_bucket": "webrtc-27c8a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285473983255:android:431a09e2fc4abce2ec4552",
+        "android_client_info": {
+          "package_name": "dev.flutterexplained.webrtc_tutorial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRLeV1QupJw84CNZO9paM9dTuLymGjsTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285473983255:android:dc798af38146d900ec4552",
+        "android_client_info": {
+          "package_name": "ke.co.interintel.nenacall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRLeV1QupJw84CNZO9paM9dTuLymGjsTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285473983255:android:102ac20173294a50ec4552",
+        "android_client_info": {
+          "package_name": "ke.co.interintel.nenasasa.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRLeV1QupJw84CNZO9paM9dTuLymGjsTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
