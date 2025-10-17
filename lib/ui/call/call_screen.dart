@@ -1,28 +1,30 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:webrtc_tutorial/signaling.dart';
-
+import 'package:webrtc_tutorial/services/signaling_service.dart';
 
 class CallScreen extends StatefulWidget {
-  final String roomId;
+  final String? roomId;
   const CallScreen({Key? key, required this.roomId}) : super(key: key);
 
   @override
   _CallScreenState createState() => _CallScreenState();
 }
+
 class _CallScreenState extends State<CallScreen> {
-  Signaling signaling = Signaling.instance;
+  SignalingService signaling = SignalingService.instance;
   RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   String? roomId;
+  bool _remoteConnected = false;
 
   @override
   void initState() {
     super.initState();
-     roomId = widget.roomId;
+    roomId = widget.roomId;
     initService();
-   
   }
 
   @override
@@ -40,25 +42,65 @@ class _CallScreenState extends State<CallScreen> {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
-    signaling.openUserMedia(_localRenderer, _remoteRenderer).then((v){
-      setState(() {});
-    });
+    if (widget.roomId != null) {
+      //In this case we are joining
+      signaling.openUserMedia(_localRenderer, _remoteRenderer).then((v) {
+        setState(() {});
+      });
+    } else {
+      //In this case its a new call
+      signaling.openUserMedia(_localRenderer, _remoteRenderer).then((v) async {
+        String _roomId = await signaling.createRoom();
+        setState(() {
+          roomId = _roomId;
+        });
+      });
+    }
+    signaling.peerConnection?.onIceConnectionState = (state) {
+  if (state == RTCIceConnectionState.RTCIceConnectionStateConnected) {
+    setState(() => _remoteConnected = true);
+  } else if (state == RTCIceConnectionState.RTCIceConnectionStateDisconnected ||
+             state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
+    setState(() => _remoteConnected = false);
+  }
+};
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: Stack(
         children: [
-
           Positioned.fill(
-            child: RTCVideoView(
+            child: _remoteConnected? RTCVideoView(
               _remoteRenderer,
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            ): Stack(
+          fit: StackFit.expand,
+          children: [
+            RTCVideoView(
+              _localRenderer,
+              mirror: true,
+              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             ),
+            
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              child: Container(
+                color: Colors.black.withAlpha(100),
+              ),
+            ),
+            
+            Center(
+              child: Text(
+                "Waiting for other participant...",
+                style: TextStyle(color: Colors.white70, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
           ),
-
 
           Positioned(
             top: 40,
@@ -80,44 +122,30 @@ class _CallScreenState extends State<CallScreen> {
             alignment: Alignment.topCenter,
             child: Container(
               margin: EdgeInsets.only(top: 40),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(10),
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'Room ID: $roomId',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-            child: Text(
-              'Room ID: $roomId',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-                        ),
           ),
         ],
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FloatingActionButton(
-            child: Icon(Icons.call_end),
-            onPressed: () {
-              signaling.hangUp(_localRenderer);
-             context.go('/');
-            },
-          ),
-          SizedBox(width: 10,),
-          FloatingActionButton(
-            child: Icon(Icons.call),
-            onPressed: () async {
-                String _roomId = await signaling.createRoom();
-                setState(() {
-                  roomId = _roomId;
-                });
-            },
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.redAccent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Icon(Icons.call_end,color: Colors.white,),
+        onPressed: () {
+          signaling.hangUp(_localRenderer);
+          context.go('/');
+        },
       ),
     );
   }
 }
-                  

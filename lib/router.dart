@@ -20,7 +20,7 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/call',
-      builder: (context, state) => CallScreen(roomId: state.extra as String? ?? 'No Room ID' ),
+      builder: (context, state) => CallScreen(roomId: state.extra as String? ),
     ),
   ],
 );

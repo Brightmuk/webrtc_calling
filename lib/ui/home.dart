@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:webrtc_tutorial/signaling.dart';
+import 'package:webrtc_tutorial/services/signaling_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Signaling signaling = Signaling.instance;
+  SignalingService signaling = SignalingService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +36,15 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: Container()),
           FilledButton(onPressed: () async {
             await getPermissions();
-          
-             context.push('/call', extra: 'No-room');
-          }, child: Text('Create a Room')),
+             context.push('/call');
+          }, child: Text('Start a call')),
           SizedBox(height: 20),
           OutlinedButton(
             onPressed: () async {
               await getPermissions();
              context.push('/join');
             },
-            child: Text('Join Room'),
+            child: Text('Join a call'),
           ),
           SizedBox(height: 20),
         ],

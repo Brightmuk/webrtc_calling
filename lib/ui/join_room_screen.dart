@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:webrtc_tutorial/signaling.dart';
+import 'package:webrtc_tutorial/services/signaling_service.dart';
 
 class JoinRoomScreen extends StatefulWidget {
   const JoinRoomScreen({super.key});
@@ -10,7 +10,7 @@ class JoinRoomScreen extends StatefulWidget {
 }
 
 class _JoinRoomScreenState extends State<JoinRoomScreen> {
-  Signaling signaling = Signaling.instance;
+  SignalingService signaling = SignalingService.instance;
   TextEditingController textEditingController = TextEditingController(text: '');
 
   @override
