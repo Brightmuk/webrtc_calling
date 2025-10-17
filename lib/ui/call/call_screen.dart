@@ -36,6 +36,7 @@ class _CallScreenState extends State<CallScreen> {
     await _localRenderer.initialize();
     await _remoteRenderer.initialize();
     signaling.onAddRemoteStream = ((stream) {
+      debugPrint("\n\nREMOTE STREAM ADDED: $stream\n\n");
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
@@ -89,17 +90,32 @@ class _CallScreenState extends State<CallScreen> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
                         ),
-          )
+          ),
         ],
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.call_end),
-        onPressed: () {
-          signaling.hangUp(_localRenderer);
-         context.go('/');
-        },
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            child: Icon(Icons.call_end),
+            onPressed: () {
+              signaling.hangUp(_localRenderer);
+             context.go('/');
+            },
+          ),
+          SizedBox(width: 10,),
+          FloatingActionButton(
+            child: Icon(Icons.call),
+            onPressed: () async {
+                String _roomId = await signaling.createRoom();
+                setState(() {
+                  roomId = _roomId;
+                });
+            },
+          ),
+        ],
       ),
     );
   }

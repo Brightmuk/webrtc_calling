@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -26,14 +27,36 @@ class Signaling {
   String? roomId;
   String? currentRoomText;
   StreamStateCallback? onAddRemoteStream;
+  
+  String generateCrockfordCode() {
+    const alphabet = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+    final random = Random.secure();
+
+    String randomChar() => alphabet[random.nextInt(alphabet.length)];
+
+    final code = List.generate(9, (_) => randomChar()).join();
+
+    // return '${code.substring(0, 3)}${code.substring(3, 6)}${code.substring(6, 9)}';
+    return '${code.substring(0, 3)}';
+  }
 
   Future<String> createRoom() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    DocumentReference roomRef = db.collection('rooms').doc();
+    DocumentReference roomRef = db.collection('rooms').doc(generateCrockfordCode());
 
-    print('Create PeerConnection with configuration: $configuration');
+    print('Create PeerConnection: $configuration\n and setting remote stream');
 
     peerConnection = await createPeerConnection(configuration);
+    remoteStream = await createLocalMediaStream('remoteStream');
+
+    peerConnection?.onTrack = (RTCTrackEvent event) {
+      print('\nCREATE: Got remote track: ${event.streams[0]}');
+
+      event.streams[0].getTracks().forEach((track) {
+        print('Add a track to the remoteStream $track');
+        remoteStream?.addTrack(track);
+      });
+    };
 
     registerPeerConnectionListeners();
 
@@ -59,18 +82,11 @@ class Signaling {
 
     await roomRef.set(roomWithOffer);
     var roomId = roomRef.id;
-    print('New room created with SDK offer. Room ID: $roomId');
+    print('New room created with SDP offer. Room ID: $roomId');
     currentRoomText = 'Current room is $roomId - You are the caller!';
     // Created a Room
 
-    peerConnection?.onTrack = (RTCTrackEvent event) {
-      print('Got remote track: ${event.streams[0]}');
 
-      event.streams[0].getTracks().forEach((track) {
-        print('Add a track to the remoteStream $track');
-        remoteStream?.addTrack(track);
-      });
-    };
 
     // Listening for remote session description below
     roomRef.snapshots().listen((snapshot) async {
@@ -106,21 +122,30 @@ class Signaling {
         }
       });
     });
-    // Listen for remote ICE candidates above
+    
 
     return roomId;
   }
 
   Future<void> joinRoom(String roomId) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    print(roomId);
+    
     DocumentReference roomRef = db.collection('rooms').doc('$roomId');
     var roomSnapshot = await roomRef.get();
     print('Got room ${roomSnapshot.exists}');
 
     if (roomSnapshot.exists) {
-      print('Create PeerConnection with configuration: $configuration');
+      print('Create PeerConnection with configuration: $configuration\n and setting remote stream');
       peerConnection = await createPeerConnection(configuration);
+      remoteStream = await createLocalMediaStream('remoteStream');
+
+      peerConnection?.onTrack = (RTCTrackEvent event) {
+        print('/nJOIN:Got remote track: ${event.streams[0]}');
+        event.streams[0].getTracks().forEach((track) {
+          print('Add a track to the remoteStream: $track');
+          remoteStream?.addTrack(track);
+        });
+      };
 
       registerPeerConnectionListeners();
 
@@ -138,17 +163,7 @@ class Signaling {
         print('onIceCandidate: ${candidate.toMap()}');
         calleeCandidatesCollection.add(candidate.toMap());
       };
-      // Code for collecting ICE candidate above
-
-      peerConnection?.onTrack = (RTCTrackEvent event) {
-        print('Got remote track: ${event.streams[0]}');
-        event.streams[0].getTracks().forEach((track) {
-          print('Add a track to the remoteStream: $track');
-          remoteStream?.addTrack(track);
-        });
-      };
-
-      // Code for creating SDP answer below
+      
       var data = roomSnapshot.data() as Map<String, dynamic>;
       print('Got offer $data');
       var offer = data['offer'];
@@ -243,7 +258,7 @@ class Signaling {
     };
 
     peerConnection?.onAddStream = (MediaStream stream) {
-      print("Add remote stream");
+      print("\n\nAdd remote stream: $stream\n");
       onAddRemoteStream?.call(stream);
       remoteStream = stream;
     };

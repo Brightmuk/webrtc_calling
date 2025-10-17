@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: Container()),
           FilledButton(onPressed: () async {
             await getPermissions();
-             String roomId = await signaling.createRoom();
-             context.push('/call', extra: roomId);
+          
+             context.push('/call', extra: 'No-room');
           }, child: Text('Create a Room')),
           SizedBox(height: 20),
           OutlinedButton(
