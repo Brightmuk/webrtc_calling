@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:webrtc_tutorial/core/crockford_generator.dart';
 
-typedef void StreamStateCallback(MediaStream stream);
 
 class SignalingService {
   static final SignalingService instance = SignalingService._internal();
@@ -24,7 +24,8 @@ class SignalingService {
   MediaStream? localStream;
   MediaStream? remoteStream;
   String? roomId;
-  StreamStateCallback? onAddRemoteStream;
+  final onAddRemoteStreamC = StreamController<MediaStream>.broadcast();
+  final onConnectionStateChangeC = StreamController<RTCPeerConnectionState>.broadcast();
 
   Future<String> createRoom() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
@@ -185,7 +186,7 @@ class SignalingService {
       remoteStream!.getTracks().forEach((track) => track.stop());
     }
     if (peerConnection != null) peerConnection!.close();
-
+    //TODO: If call initiator hangs up then we can delete room info
     if (roomId != null) {
       var db = FirebaseFirestore.instance;
       var roomRef = db.collection('rooms').doc(roomId);
@@ -209,6 +210,7 @@ class SignalingService {
 
     peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
       print('Connection state change: $state');
+      onConnectionStateChangeC.add(state);
     };
 
     peerConnection?.onSignalingState = (RTCSignalingState state) {
@@ -220,8 +222,8 @@ class SignalingService {
     };
 
     peerConnection?.onAddStream = (MediaStream stream) {
-      print("\n\nAdd remote stream: $stream\n");
-      onAddRemoteStream?.call(stream);
+      print("\n\nRemote stream added: $stream\n");
+      onAddRemoteStreamC.add(stream);
       remoteStream = stream;
     };
   }
