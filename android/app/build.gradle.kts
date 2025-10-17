@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.flutterexplained.webrtc_tutorial"
+    namespace = "com.brimukon.calling"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         
-        applicationId = "dev.flutterexplained.webrtc_tutorial"
+        applicationId = "com.brimukon.calling"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

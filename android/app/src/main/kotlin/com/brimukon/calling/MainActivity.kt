@@ -1,4 +1,4 @@
-package dev.flutterexplained.webrtc_tutorial
+package com.brimukon.calling
 
 import io.flutter.embedding.android.FlutterActivity
 

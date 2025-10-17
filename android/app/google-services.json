@@ -7,17 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:285473983255:android:431a09e2fc4abce2ec4552",
+        "mobilesdk_app_id": "1:285473983255:android:05f464e7a6f7890eec4552",
         "android_client_info": {
-          "package_name": "dev.flutterexplained.webrtc_tutorial"
+          "package_name": "com.brimukon.calling"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBRLeV1QupJw84CNZO9paM9dTuLymGjsTY"
@@ -25,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     },
@@ -41,12 +31,7 @@
           "package_name": "ke.co.interintel.nenacall"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBRLeV1QupJw84CNZO9paM9dTuLymGjsTY"
@@ -54,12 +39,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     },
@@ -70,12 +50,7 @@
           "package_name": "ke.co.interintel.nenasasa.dev"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBRLeV1QupJw84CNZO9paM9dTuLymGjsTY"
@@ -83,12 +58,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "285473983255-b5ro6sshst7t5vhmko7bkre6khldte02.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

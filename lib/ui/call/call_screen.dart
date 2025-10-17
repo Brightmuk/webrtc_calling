@@ -39,7 +39,9 @@ class _CallScreenState extends State<CallScreen> {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
-    await signaling.openUserMedia(_localRenderer, _remoteRenderer);
+    signaling.openUserMedia(_localRenderer, _remoteRenderer).then((v){
+      setState(() {});
+    });
   }
 
   @override
