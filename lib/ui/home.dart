@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:webrtc_tutorial/signaling.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,13 +34,15 @@ class _HomePageState extends State<HomePage> {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           Expanded(child: Container()),
-          FilledButton(onPressed: ()async {
+          FilledButton(onPressed: () async {
+            await getPermissions();
              String roomId = await signaling.createRoom();
-             context.go('/call', extra: roomId);
+             context.push('/call', extra: roomId);
           }, child: Text('Create a Room')),
           SizedBox(height: 20),
           OutlinedButton(
-            onPressed: ()  {
+            onPressed: () async {
+              await getPermissions();
              context.push('/join');
             },
             child: Text('Join Room'),
@@ -49,4 +52,15 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  Future<void> getPermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+  Permission.camera,
+  Permission.microphone,
+].request();
+    print(statuses);
+    if (statuses[Permission.camera]!.isGranted && statuses[Permission.microphone]!.isGranted) {
+      print('Camera and Microphone permissions are granted');
+    } else {
+      print('Camera and/or Microphone permissions are denied'); 
+  }}
 }

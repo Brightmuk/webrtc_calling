@@ -16,20 +16,35 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Text('Join Room', style: Theme.of(context).textTheme.headlineMedium),
-          TextFormField(controller: textEditingController),
-          SizedBox(height: 8),
-          Expanded(child: Container()),
-          FilledButton(
-            onPressed: () {
-              signaling.joinRoom(textEditingController.text.trim());
-              context.go('/call', extra: textEditingController.text.trim());
-            },
-            child: Text('Join Room'),
-          ),
-        ],
+      appBar: AppBar(
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+           
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: 'Enter Room ID',
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              controller: textEditingController,
+            ),
+            SizedBox(height: 8),
+            Expanded(child: Container()),
+            FilledButton(
+              onPressed: () {
+                signaling.joinRoom(textEditingController.text.trim());
+                context.push('/call', extra: textEditingController.text.trim());
+              },
+              child: Text('Join Room'),
+            ),
+          ],
+        ),
       ),
     );
   }

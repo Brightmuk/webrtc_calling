@@ -19,16 +19,10 @@ class _CallScreenState extends State<CallScreen> {
 
   @override
   void initState() {
-    _localRenderer.initialize();
-    _remoteRenderer.initialize();
-
-    signaling.onAddRemoteStream = ((stream) {
-      _remoteRenderer.srcObject = stream;
-      setState(() {});
-    });
-     signaling.openUserMedia(_localRenderer, _remoteRenderer);
-
     super.initState();
+     roomId = widget.roomId;
+    initService();
+   
   }
 
   @override
@@ -38,15 +32,23 @@ class _CallScreenState extends State<CallScreen> {
     super.dispose();
   }
 
+  Future<void> initService() async {
+    await _localRenderer.initialize();
+    await _remoteRenderer.initialize();
+    signaling.onAddRemoteStream = ((stream) {
+      _remoteRenderer.srcObject = stream;
+      setState(() {});
+    });
+    await signaling.openUserMedia(_localRenderer, _remoteRenderer);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(
-            'Room ID: $roomId',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),),
+     
       body: Stack(
         children: [
+
           Positioned.fill(
             child: RTCVideoView(
               _remoteRenderer,
@@ -71,6 +73,21 @@ class _CallScreenState extends State<CallScreen> {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: EdgeInsets.only(top: 40),
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              'Room ID: $roomId',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+                        ),
+          )
         ],
       ),
 
