@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webrtc_tutorial/core/theme.dart';
 import 'package:webrtc_tutorial/services/signaling_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,43 +13,54 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final Uri _url = Uri.parse('https://brimukon.com/privacy.html');
   SignalingService signaling = SignalingService.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: themeColor,
       appBar: AppBar(
+        backgroundColor: themeColor,
         elevation: 0,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 20),
-          Text(
-            'Welcome \nto the Calling App',
-            style: Theme.of(context).textTheme.headlineMedium,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Start calling your friends now',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          Expanded(child: Container()),
-          FilledButton(onPressed: () async {
-            await getPermissions();
-             context.push('/call');
-          }, child: Text('Start a call')),
-          SizedBox(height: 20),
-          OutlinedButton(
-            onPressed: () async {
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 20),
+            Image.asset('assets/images/icon_plain.png',width: 50,),
+            SizedBox(height: 10),
+            Text(
+              'Instant video calls',
+              style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontWeight: FontWeight.bold,color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 15),
+            Text(
+              '✓ Make free secure video calls. \n✓ No sign-ups needed. \n✓ No data collected',
+              style: TextStyle(color: Colors.white,fontSize: 16),
+            ),
+            Expanded(child: Container()),
+            FilledButton(
+              onPressed: () async {
               await getPermissions();
-             context.push('/join');
-            },
-            child: Text('Join a call'),
-          ),
-          SizedBox(height: 20),
-        ],
+               context.push('/call');
+            }, child: Text('Start a call')),
+            SizedBox(height: 20),
+            OutlinedButton(
+              onPressed: () async {
+                await getPermissions();
+               context.push('/join');
+              },
+              child: Text('Join a call'),
+            ),
+            SizedBox(height: 20),
+            TextButton(onPressed: _launchUrl, child: Text('Terms of service',style: TextStyle(color: Colors.white),)),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -62,4 +75,9 @@ class _HomePageState extends State<HomePage> {
     } else {
       print('Camera and/or Microphone permissions are denied'); 
   }}
+  Future<void> _launchUrl() async {
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+    }
+  }
 }
