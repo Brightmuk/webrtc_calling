@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:meta/meta.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:webrtc_tutorial/services/signaling_service.dart';
 
 part 'call_state.dart';
@@ -32,6 +33,7 @@ class CallCubit extends Cubit<CallState> {
     _remoteStream();
     _connectionStream();
     _localMediaInit();
+    WakelockPlus.enable();
   }
 
   void _connectionStream() {
@@ -82,7 +84,7 @@ class CallCubit extends Cubit<CallState> {
     remoteRenderer.dispose();
     _remoteStreamSub.cancel();
     _connectionChangeSub.cancel();
-    
+    WakelockPlus.disable();
     super.close();
   }
 }
