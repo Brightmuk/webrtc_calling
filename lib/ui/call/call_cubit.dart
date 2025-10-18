@@ -41,6 +41,7 @@ class CallCubit extends Cubit<CallState> {
       if (connectionState ==
           RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
         _remoteConnected = true;
+        _stateText = "ongoing call";
       }else if(connectionState == RTCPeerConnectionState.RTCPeerConnectionStateClosed){
         _stateText = "Participant left the call";
       } else {
@@ -73,6 +74,33 @@ class CallCubit extends Cubit<CallState> {
       });
     }
   }
+
+  bool isMuted = false;
+
+  void toggleMute() {
+    if (_signaling.localStream != null) {
+      
+      final audioTrack = _signaling.localStream!
+          .getAudioTracks()
+          .firstWhere((track) => track.kind == 'audio');
+
+      audioTrack.enabled = !audioTrack.enabled;
+
+      isMuted = !audioTrack.enabled;
+      print(isMuted ? 'Microphone muted' : 'Microphone unmuted');
+      emit(CallInitialised(version: ++version, roomId: _roomId, stateText:  _stateText));
+    }
+  }
+
+  bool isSpeakerOn = false;
+
+  void toggleSpeaker() async {
+    isSpeakerOn = !isSpeakerOn;
+    await Helper.setSpeakerphoneOn(isSpeakerOn);
+    print(isSpeakerOn ? 'Speaker enabled' : 'Speaker disabled');
+    emit(CallInitialised(version: ++version, roomId: _roomId, stateText:  _stateText));
+  }
+
 
   void hangup() {
     _signaling.hangUp(localRenderer);

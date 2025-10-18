@@ -12,6 +12,7 @@ class CallScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     return BlocProvider(
       create: (context) => CallCubit(roomId),
       child: BlocConsumer<CallCubit, CallState>(
@@ -87,34 +88,92 @@ class CallScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Container(
-                      margin: EdgeInsets.only(top: 40),
-                      padding: EdgeInsets.all(6),
+                      width:100,
+                      height: 40,
+                      margin: const EdgeInsets.only(top: 40),
+                      
                       decoration: BoxDecoration(
-                        color:
-                            Theme.of(context).colorScheme.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color.fromARGB(255, 200, 200, 200))
                       ),
-                      child: Text(
-                        'Call ID: ${state.roomId}',
-                        style: Theme.of(context).textTheme.bodyMedium,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Stack(
+                          children: [
+                            BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 8,
+                                sigmaY: 8,
+                              ),
+                              child: Container(
+                                color: Colors.black.withAlpha(50),
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                '${state.roomId}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                 
+
                 ],
               ),
 
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.redAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Icon(Icons.call_end, color: Colors.white),
-                onPressed: () {
-                  _calllCubit.hangup();
-                  context.go('/');
-                },
+              floatingActionButton: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                    heroTag: 'mute',
+                    backgroundColor: Colors.white.withAlpha(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(_calllCubit.isMuted?Icons.mic_off_outlined: Icons.mic_outlined, color: Colors.white),
+                    onPressed: () {
+                      _calllCubit.toggleMute();
+                    },
+                  ),
+                  SizedBox(width: 20,),
+                  FloatingActionButton(
+                    heroTag: 'hangup',
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(Icons.call_end, color: Colors.white),
+                    onPressed: () {
+                      _calllCubit.hangup();
+                      context.go('/');
+                    },
+                  ),
+                  SizedBox(width: 20,),
+                   FloatingActionButton(
+                    heroTag: 'speaker',
+                    backgroundColor: Colors.white.withAlpha(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(_calllCubit.isSpeakerOn? Icons.volume_up_outlined:Icons.volume_off_outlined, color: Colors.white),
+                    onPressed: () {
+                      _calllCubit.toggleSpeaker();
+                    },
+                  ),
+                ],
               ),
             );
           } else if (state is CallFailed) {
@@ -149,5 +208,23 @@ class CallScreen extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+
+class IncallButton extends StatelessWidget {
+  final Widget icon;
+  const IncallButton({super.key, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white24),
+        borderRadius: BorderRadius.circular(50)
+      ),
+      child: icon
+      );
   }
 }
