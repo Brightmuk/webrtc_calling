@@ -42,7 +42,7 @@ class CallCubit extends Cubit<CallState> {
           RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
         _remoteConnected = true;
         _stateText = "ongoing call";
-      }else if(connectionState == RTCPeerConnectionState.RTCPeerConnectionStateClosed){
+      }else if(connectionState == RTCPeerConnectionState.RTCPeerConnectionStateClosed || connectionState == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected){
         _stateText = "Participant left the call";
       } else {
         _remoteConnected = false;
@@ -100,6 +100,21 @@ class CallCubit extends Cubit<CallState> {
     print(isSpeakerOn ? 'Speaker enabled' : 'Speaker disabled');
     emit(CallInitialised(version: ++version, roomId: _roomId, stateText:  _stateText));
   }
+
+  bool isVideoPaused = false;
+
+    void toggleVideo() {
+      if (_signaling.localStream != null) {
+        final videoTrack = _signaling.localStream!
+            .getVideoTracks()
+            .firstWhere((track) => track.kind == 'video');
+        videoTrack.enabled = !videoTrack.enabled;
+        isVideoPaused = !videoTrack.enabled;
+        print(isVideoPaused ? 'Video paused' : 'Video resumed');
+        _stateText = isVideoPaused? "Video Paused":"ongoing call";
+        emit(CallInitialised(version: ++version, roomId: _roomId, stateText:  _stateText));
+      }
+    }
 
 
   void hangup() {

@@ -76,7 +76,12 @@ class CallScreen extends StatelessWidget {
                       child: SizedBox(
                         width: 120,
                         height: 180,
-                        child: RTCVideoView(
+                        child: context.read<CallCubit>().isVideoPaused? 
+                        Container(
+                          color: const Color.fromARGB(255, 39, 38, 38),
+                          child: Center(child: Text('You',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),)
+                          ):
+                         RTCVideoView(
                           _calllCubit.localRenderer,
                           mirror: true,
                           objectFit:
@@ -93,8 +98,9 @@ class CallScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 40),
                       
                       decoration: BoxDecoration(
+                        boxShadow: [BoxShadow(blurRadius: 0.4,spreadRadius: 0.4,color: Colors.black.withAlpha(10))],
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color.fromARGB(255, 200, 200, 200))
+                        // border: Border.all(color: const Color.fromARGB(255, 200, 200, 200))
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
@@ -102,8 +108,8 @@ class CallScreen extends StatelessWidget {
                           children: [
                             BackdropFilter(
                               filter: ImageFilter.blur(
-                                sigmaX: 8,
-                                sigmaY: 8,
+                                sigmaX: 10,
+                                sigmaY: 10,
                               ),
                               child: Container(
                                 color: Colors.black.withAlpha(50),
@@ -163,14 +169,14 @@ class CallScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 20,),
                    FloatingActionButton(
-                    heroTag: 'speaker',
+                    heroTag: 'pause',
                     backgroundColor: Colors.white.withAlpha(20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Icon(_calllCubit.isSpeakerOn? Icons.volume_up_outlined:Icons.volume_off_outlined, color: Colors.white),
+                    child: Icon(_calllCubit.isVideoPaused? Icons.videocam_off_outlined:Icons.videocam_outlined, color: Colors.white),
                     onPressed: () {
-                      _calllCubit.toggleSpeaker();
+                      _calllCubit.toggleVideo();
                     },
                   ),
                 ],
